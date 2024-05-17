@@ -51,9 +51,9 @@ And select a suitable RNA sequencing experiment.
   prefetch SRRXXX
   fastq-dump --split-files SRRXXX/SRRXXX.sra
   ```
-- align data to reference genome
+- align data to reference genome (using 1 thread per CPU core)
   ```sh
-  hisat2 -x genome_index_GRCh38 -1 SRRXXX_1.fastq -2 SRRXXX_2.fastq -S output.sam
+  hisat2 --threads $(getconf _NPROCESSORS_ONLN) -x genome_index_GRCh38 -1 SRRXXX_1.fastq -2 SRRXXX_2.fastq -S output.sam
   ```
 - convert SAM to BAM, sort, and index
   ```sh
