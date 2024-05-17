@@ -29,3 +29,8 @@ RUN apt install -y unzip
 ADD https://cloud.biohpc.swmed.edu/index.php/s/oTtGWbWjaxsQ2Ho/download hisat2-2.2.1.zip
 RUN unzip hisat2-2.2.1.zip
 ENV PATH="${PATH}:${TOOLS_DIR}/hisat2-2.2.1"
+
+# stringtie
+ADD https://github.com/gpertea/stringtie/releases/download/v2.2.3/stringtie-2.2.3.Linux_x86_64.tar.gz stringtie-2.2.3.Linux_x86_64.tar.gz
+RUN tar -vxzf stringtie-2.2.3.Linux_x86_64.tar.gz
+ENV PATH="${PATH}:${TOOLS_DIR}/stringtie-2.2.3.Linux_x86_64"
