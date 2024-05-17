@@ -14,7 +14,7 @@ RUN tar -vxzf sratoolkit.tar.gz
 ENV PATH="${PATH}:${TOOLS_DIR}/sratoolkit.3.1.0-ubuntu64/bin"
 
 # samtools
-RUN apt install -y bzip2 build-essential libncurses5-dev libncursesw5-dev zlib1g-dev libbz2-dev liblzma-dev
+RUN apt-get install -y bzip2 build-essential libncurses5-dev libncursesw5-dev zlib1g-dev libbz2-dev liblzma-dev
 ADD https://github.com/samtools/samtools/releases/download/1.20/samtools-1.20.tar.bz2 samtools-1.20.tar.bz2
 RUN tar -vxf samtools-1.20.tar.bz2
 WORKDIR ${TOOLS_DIR}/samtools-1.20
@@ -25,7 +25,7 @@ WORKDIR ${TOOLS_DIR}
 ENV PATH="${PATH}:${TOOLS_DIR}/samtools-build/bin"
 
 # hisat 2
-RUN apt install -y unzip
+RUN apt-get install -y unzip
 ADD https://cloud.biohpc.swmed.edu/index.php/s/oTtGWbWjaxsQ2Ho/download hisat2-2.2.1.zip
 RUN unzip hisat2-2.2.1.zip
 ENV PATH="${PATH}:${TOOLS_DIR}/hisat2-2.2.1"
