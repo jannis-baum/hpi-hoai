@@ -23,3 +23,9 @@ RUN make
 RUN make install
 WORKDIR ${TOOLS_DIR}
 ENV PATH="${PATH}:${TOOLS_DIR}/samtools-build/bin"
+
+# hisat 2
+RUN apt install -y unzip
+ADD https://cloud.biohpc.swmed.edu/index.php/s/oTtGWbWjaxsQ2Ho/download hisat2-2.2.1.zip
+RUN unzip hisat2-2.2.1.zip
+ENV PATH="${PATH}:${TOOLS_DIR}/hisat2-2.2.1"
