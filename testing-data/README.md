@@ -57,11 +57,11 @@ And select a suitable RNA sequencing experiment.
   ```
 - convert SAM to BAM, sort, and index
   ```sh
-  samtools view -bS output.sam > output.bam
-  samtools sort output.bam -o output_sorted.bam
-  samtools index output_sorted.bam
+  samtools --nthreads $(getconf _NPROCESSORS_ONLN) view -bS output.sam > output.bam
+  samtools --nthreads $(getconf _NPROCESSORS_ONLN) sort output.bam -o output_sorted.bam
+  samtools --nthreads $(getconf _NPROCESSORS_ONLN) index output_sorted.bam
   ```
 - assemble transcripts and quantify splicing events
   ```sh
-  stringtie output_sorted.bam -G Homo_sapiens.GRCh38.104.gtf -o output.gtf -A gene_abundances.tsv
+  stringtie -p $(getconf _NPROCESSORS_ONLN) output_sorted.bam -G Homo_sapiens.GRCh38.104.gtf -o output.gtf -A gene_abundances.tsv
   ```
