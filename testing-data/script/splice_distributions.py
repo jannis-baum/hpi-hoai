@@ -1,10 +1,8 @@
-import argparse
-
 import numpy as np
 import pandas as pd
 
 # helper to parse attributes and add them as a new column
-def _extract_attribute(df, attr, cast=None):
+def _extract_attribute(df, attr, cast = None):
     def _parse_attribute(col, attr):
         # (some attributes are optional, that's why we need NaN)
         try: value = col.split(f'{attr} "')[1].split('";')[0]
@@ -15,18 +13,13 @@ def _extract_attribute(df, attr, cast=None):
         except: return np.NaN
     df[attr] = df['attribute'].apply(_parse_attribute, args=(attr, ))
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser('splice_distributions')
-    parser.add_argument('gtf_in', help='Input GTF file from Stringtie')
-    parser.add_argument('-chr', '--chromosome', type=str, help='output only data for the given chromosome (or, more accurately, GTF seqname)')
-    args = parser.parse_args()
-
+def get_splice_distributions(gtf_path, seqname_filter = None):
     gtf_df = pd.read_csv(
-        args.gtf_in, sep='\t', comment='#', low_memory=False,
+        gtf_path, sep='\t', comment='#', low_memory=False,
         names=['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']
     )
-    if args.chromosome:
-        gtf_df = gtf_df[gtf_df.seqname == args.chromosome]
+    if seqname_filter:
+        gtf_df = gtf_df[gtf_df.seqname == seqname_filter]
 
     # get transcripts
     transcripts = gtf_df[gtf_df['feature'] == 'transcript'].loc[:]
@@ -52,5 +45,7 @@ if __name__ == '__main__':
     # merge relative expression of transcript into exons
     exons = pd.merge(exons, transcripts[['transcript_id', 'transcript_expression']], on='transcript_id')
     # sum up relative expressions of transcripts to receive donor/acceptor probabilities & save as csvs
-    exons.groupby('start')['transcript_expression'].sum().rename('p_acceptor').to_csv('p_acceptor.csv')
-    exons.groupby('end')['transcript_expression'].sum().rename('p_donor').to_csv('p_donor.csv')
+    return (
+        exons.groupby('start')['transcript_expression'].sum().rename('p_acceptor'),
+        exons.groupby('end')['transcript_expression'].sum().rename('p_donor')
+    )
