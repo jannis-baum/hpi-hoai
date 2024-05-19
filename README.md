@@ -1,13 +1,15 @@
-# Pangolin evaluation
+# Evaluating splice prediction tools
 
-## Installation
+## Pangolin
+
+### Installation
 
 - install requirements.txt in a virtual env with Python version specified in
   `.python-version`
   - you may need to `pip install setuptools==57` separately to make it work
 - run `pip install .` in the `Pangolin` repo directory
 
-## Running the example
+### Running the example
 
 - download the data
   ```sh
