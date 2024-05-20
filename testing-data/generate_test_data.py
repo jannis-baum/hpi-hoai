@@ -15,15 +15,15 @@ if __name__ == '__main__':
     chrom = get_first_chromosome(args.vcf_in)
 
     p_acceptor, p_donor = get_splice_distributions(args.gtf_in, chrom)
-    p_acceptor.to_csv('p_acceptor.csv')
-    p_donor.to_csv('p_donor.csv')
+    p_acceptor.to_csv('p_acceptor.csv', index=False)
+    p_donor.to_csv('p_donor.csv', index=False)
 
     def _considered_range(pos) -> list[int]:
         return list(range(pos - args.distance, pos + args.distance))
 
     pos_whitelist = {
         considered_pos
-        for pos in np.concatenate([p_acceptor.index, p_donor.index])
+        for pos in np.concatenate([p_acceptor['start'], p_donor['end']])
         for considered_pos in _considered_range(pos)
     }
     filter_positions(args.vcf_in, 'filtered.vcf', pos_whitelist)
