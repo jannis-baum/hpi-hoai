@@ -83,7 +83,10 @@ def get_splice_distributions(gtf_path, seqname_filter = None, read_length=75):
         # merge estimated gene read counts into sites & delete unneeded gene_id column
         sites = pd.merge(sites, transcripts.drop_duplicates(subset=['gene_id'])[['gene_id', 'g_read_count']], on='gene_id')
         del sites['gene_id']
-        return sites.rename(columns={'transcript_expression': f'p_{site}'})
+        return sites.rename(columns={
+            'transcript_expression': 'p',
+            'g_read_count': 'n'
+        })
 
     return (
         _get_splice_probs('acceptor'),
