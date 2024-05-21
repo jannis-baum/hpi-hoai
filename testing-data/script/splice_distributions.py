@@ -69,10 +69,13 @@ def get_splice_distributions(gtf_path, seqname_filter = None, read_length=75):
 
     # merge relative expression of transcript into exons
     exons = pd.merge(exons, transcripts[['transcript_id', 'transcript_expression']], on='transcript_id')
+    # directionally independent sides
+    exons['5p'] = np.where(exons['strand'] == '+', exons['start'], exons['end'])
+    exons['3p'] = np.where(exons['strand'] == '+', exons['end'], exons['start'])
 
     # helper to avoid repeating the same code for both splicing sides
     def _get_splice_probs(site: Literal['acceptor', 'donor']):
-        side = 'start' if site == 'acceptor' else 'end'
+        side = '5p' if site == 'acceptor' else '3p'
         # sum up transcript expression to get splice probability
         sites = exons.groupby([side, 'gene_id'])[['transcript_expression']].sum()
         # (keep position as column instead of just index to preserve it in merge)

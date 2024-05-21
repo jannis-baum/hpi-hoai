@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     pos_whitelist = {
         considered_pos
-        for pos in np.concatenate([p_acceptor['start'], p_donor['end']])
+        for pos in np.concatenate([p_acceptor['5p'], p_donor['3p']])
         for considered_pos in _considered_range(pos)
     }
     filter_positions(args.vcf_in, os.path.join(out_dir, 'filtered-variants.vcf'), pos_whitelist)
