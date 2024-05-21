@@ -80,13 +80,24 @@ def get_splice_distributions(gtf_path, seqname_filter = None, read_length=75):
         sites = exons.groupby([side, 'gene_id'])[['transcript_expression']].sum()
         # (keep position as column instead of just index to preserve it in merge)
         sites.insert(0, side, sites.index.get_level_values(side))
-        # merge estimated gene read counts into sites & delete unneeded gene_id column
-        sites = pd.merge(sites, transcripts.drop_duplicates(subset=['gene_id'])[['gene_id', 'g_read_count']], on='gene_id')
-        del sites['gene_id']
-        return sites.rename(columns={
+        # merge estimated gene read counts into sites & rename columns
+        sites = pd.merge(
+            sites,
+            transcripts.drop_duplicates(subset=['gene_id'])[['gene_id', 'g_read_count']],
+            on='gene_id'
+        ).rename(columns={
             'transcript_expression': 'p',
             'g_read_count': 'n'
         })
+        # check that we don't have duplicate sites
+        dup_sites = sites[side].duplicated(keep=False)
+        if sum(dup_sites) > 0:
+            print(f'Warning: dropping duplicate {site} sites:')
+            print(sites[dup_sites])
+            sites = sites[~dup_sites]
+        # delete unneeded gene_id column
+        del sites['gene_id']
+        return sites
 
     return (
         _get_splice_probs('acceptor'),
