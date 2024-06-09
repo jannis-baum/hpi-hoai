@@ -31,16 +31,13 @@ def case_id(file) -> str | None:
     return cases[0]['case_id']
 
 if __name__ == '__main__':
-    parser = ArgumentParser('filter_files', description='Filter GDC manifest file based on cat JSON')
-    parser.add_argument('manifest', type=str)
+    parser = ArgumentParser('filter_files', description='Filter GDC cart based on JSON')
     parser.add_argument('json', type=str)
 
     args = parser.parse_args()
 
     json_dir = os.path.dirname(os.path.abspath(args.json))
     out_info_path = os.path.join(json_dir, 'filtered_info.csv')
-    manifest_dir = os.path.dirname(os.path.abspath(args.manifest))
-    out_manifest_path = os.path.join(manifest_dir, 'filtered_manifest.txt')
 
     # inspect JSON to find relevant files
     with open(args.json, 'rb') as fp:
