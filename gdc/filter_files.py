@@ -7,13 +7,13 @@ import pandas as pd
 def filetype(file) -> str | None:
     if 'file_name' not in file or 'data_format' not in file or 'experimental_strategy' not in file:
         return None
-    # RNA-Seq conditions
+    # Splice Junction conditions
     if all([
-        file['file_name'].endswith('.rna_seq.transcriptome.gdc_realn.bam'),
-        file['data_format'] == 'BAM',
+        file['file_name'].endswith('.rna_seq.star_splice_junctions.tsv.gz'),
+        file['data_format'] == 'TSV',
         file['experimental_strategy'] == 'RNA-Seq'
     ]):
-        return 'rna_seq'
+        return 'splice'
     # WGS conditions
     if not all([
         file['data_format'] == 'VFC',
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     with open(args.json, 'rb') as fp:
         files = json.load(fp)
     
-    info = pd.DataFrame(columns=['case_id', 'rna_seq', 'wgs_brass', 'wgs_pindel', 'wgs_caveman', 'total_size'])
+    info = pd.DataFrame(columns=['case_id', 'splice', 'wgs_brass', 'wgs_pindel', 'wgs_caveman', 'total_size'])
     info.set_index('case_id', inplace=True)
     for file in files:
         ft = filetype(file)
