@@ -42,17 +42,22 @@ if __name__ == '__main__':
     manifest_dir = os.path.dirname(os.path.abspath(args.manifest))
     out_manifest_path = os.path.join(manifest_dir, 'filtered_manifest.txt')
 
+    # inspect JSON to find relevant files
     with open(args.json, 'rb') as fp:
         files = json.load(fp)
     
-    info = pd.DataFrame(columns=['case_id', 'rna_seq', 'wgs_brass', 'wgs_pindel', 'wgs_caveman'])
+    info = pd.DataFrame(columns=['case_id', 'rna_seq', 'wgs_brass', 'wgs_pindel', 'wgs_caveman', 'total_size'])
     info.set_index('case_id', inplace=True)
     for file in files:
         ft = filetype(file)
         cid = case_id(file)
         if not ft or not cid: continue
         if cid not in info.index:
-            info.loc[cid] = [None, None, None, None]
+            info.loc[cid] = [pd.NA, pd.NA, pd.NA, pd.NA, 0]
         info.at[cid, ft] = file['file_name']
+        info.at[cid, 'total_size'] = info.at[cid, 'total_size'] + file['file_size']
 
+    info.dropna(how='any', inplace=True)
+    info['total_size'] = info['total_size'] / 10**9
     info.to_csv(out_info_path)
+    print('Total size (GB): ', info['total_size'].sum())
