@@ -17,12 +17,19 @@ if __name__ == '__main__':
     parser = ArgumentParser('get_manifest', description='Get GDC manifest file for info index')
     parser.add_argument('manifest', type=str)
     parser.add_argument('info', type=str)
-    parser.add_argument('--case_id', type=str, required=False, default=None)
+    parser.add_argument('--case_id', type=str)
+    parser.add_argument('--out', type=str, help='Filtered manifest output')
 
     args = parser.parse_args()
 
     info = pd.read_csv(args.info, index_col='case_id')
-    if args.case_id is not None:
+    if args.case_id:
         info = info.loc[[args.case_id]]
+    
+    manifest = get_manifest(args.manifest, info)
 
-    print(get_manifest(args.manifest, info))
+    if args.out:
+        with open(args.out, 'w') as fp:
+            fp.write(manifest)
+    else:
+        print(manifest, end='')

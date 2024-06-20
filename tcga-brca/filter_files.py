@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 import json
 import os
+import sys
 
 import pandas as pd
 
@@ -33,11 +34,12 @@ def case_id(file) -> str | None:
 if __name__ == '__main__':
     parser = ArgumentParser('filter_files', description='Filter GDC cart based on JSON')
     parser.add_argument('json', type=str)
+    parser.add_argument('--out', type=str, help='Info file output')
 
     args = parser.parse_args()
 
     json_dir = os.path.dirname(os.path.abspath(args.json))
-    out_info_path = os.path.join(json_dir, 'filtered_info.csv')
+    out_info_path = args.out if args.out else os.path.join(json_dir, 'filtered_info.csv')
 
     # inspect JSON to find relevant files
     with open(args.json, 'rb') as fp:
@@ -55,6 +57,14 @@ if __name__ == '__main__':
         info.at[cid, 'total_size'] = info.at[cid, 'total_size'] + file['file_size']
 
     info.dropna(how='any', inplace=True)
+
+    csv = info.to_csv()
+    if args.out:
+        with open(args.out, 'w') as fp:
+            fp.write(csv)
+    else:
+        print(csv, end='')
+
     info['total_size'] = info['total_size'] / 10**9
-    info.to_csv(out_info_path)
-    print('Total size (GB): ', info['total_size'].sum())
+    # print to stderr so we can still redirect csv to file
+    print('Total size (GB): ', info['total_size'].sum(), file=sys.stderr)
