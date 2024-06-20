@@ -8,13 +8,15 @@ import pandas as pd
 def filetype(file) -> str | None:
     if 'file_name' not in file or 'data_format' not in file or 'experimental_strategy' not in file:
         return None
-    # Splice Junction conditions
+    # Splice Junctions & Gene Expression conditions
     if all([
-        file['file_name'].endswith('.rna_seq.star_splice_junctions.tsv.gz'),
         file['data_format'] == 'TSV',
         file['experimental_strategy'] == 'RNA-Seq'
     ]):
-        return 'splice'
+        if file['file_name'].endswith('.rna_seq.star_splice_junctions.tsv.gz'):
+            return 'splice'
+        if file['file_name'].endswith('.rna_seq.augmented_star_gene_counts.tsv'):
+            return 'expression'
     # WGS conditions
     if not all([
         file['data_format'] == 'VFC',
@@ -45,14 +47,14 @@ if __name__ == '__main__':
     with open(args.json, 'rb') as fp:
         files = json.load(fp)
     
-    info = pd.DataFrame(columns=['case_id', 'splice', 'wgs_brass', 'wgs_pindel', 'wgs_caveman', 'total_size'])
+    info = pd.DataFrame(columns=['case_id', 'splice', 'expression', 'wgs_brass', 'wgs_pindel', 'wgs_caveman', 'total_size'])
     info.set_index('case_id', inplace=True)
     for file in files:
         ft = filetype(file)
         cid = case_id(file)
         if not ft or not cid: continue
         if cid not in info.index:
-            info.loc[cid] = [pd.NA, pd.NA, pd.NA, pd.NA, 0]
+            info.loc[cid] = [pd.NA, pd.NA, pd.NA, pd.NA, pd.NA, 0]
         info.at[cid, ft] = file['file_name']
         info.at[cid, 'total_size'] = info.at[cid, 'total_size'] + file['file_size']
 
