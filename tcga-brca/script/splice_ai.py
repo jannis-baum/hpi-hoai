@@ -9,6 +9,6 @@ models = [load_model(resource_filename('spliceai', x)) for x in _paths]
 def predict(seq: str) -> tuple[np.ndarray, np.ndarray]:
     encoded = one_hot_encode(seq)[None, :]
     y = np.mean([models[m].predict(encoded) for m in range(5)], axis=0)
-    acceptor_prob = y[0, :, 1]
     donor_prob = y[0, :, 2]
-    return (acceptor_prob, donor_prob)
+    acceptor_prob = y[0, :, 1]
+    return (donor_prob, acceptor_prob)
