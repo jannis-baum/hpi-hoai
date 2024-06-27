@@ -1,11 +1,10 @@
 import numpy as np
 import pandas as pd
 
-from definitions import brca1
 from script.data_loading import get_path, study_info
 from script.gene import Gene
 
-def junctions_and_count(case_id: str, gene: Gene = brca1) -> tuple[pd.DataFrame, int]:
+def junctions_and_count(case_id: str, gene: Gene) -> tuple[pd.DataFrame, int]:
     case = study_info.loc[case_id]
 
     def _get_junctions() -> pd.DataFrame:
