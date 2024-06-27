@@ -1,6 +1,8 @@
 from pyfaidx import Fasta
 from pysam import VariantFile
 
+from script.gene import Gene
+
 class Annotator():
     def __init__(self, fasta_path, vcf_path):
         self._fasta = Fasta(fasta_path)
@@ -17,3 +19,6 @@ class Annotator():
             ref_seq = ref_seq[:pos] + list(alt) + ref_seq[pos + len(ref):]
 
         return ''.join(ref_seq)
+
+    def get_gene_seq(self, gene: Gene, padding: int = 10000) -> str:
+        return self.get_seq(gene.chromosome, gene.bp_start - padding, gene.bp_end + padding)
