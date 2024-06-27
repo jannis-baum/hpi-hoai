@@ -16,11 +16,9 @@ def junctions_and_count(case_id: str, gene: Gene = brca1) -> tuple[pd.DataFrame,
             & (df['intron_end'] > gene.bp_start) & (df['intron_end'] < gene.bp_end) \
             & (df['strand'] != 0)
         ]
-        # find donor & acceptor sites based on strand
-        strand_conditions = [df['strand'] == 1, df['strand'] == 2]
         return pd.DataFrame({
-            'intron_donor': np.select(strand_conditions, [df['intron_start'], df['intron_end']]),
-            'intron_acceptor': np.select(strand_conditions, [df['intron_end'], df['intron_start']]),
+            'intron_donor': df['intron_start'],
+            'intron_acceptor': df['intron_end'],
             'n': df['n_unique_map']
         }).set_index(['intron_donor', 'intron_acceptor'])
 
