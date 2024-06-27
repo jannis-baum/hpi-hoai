@@ -21,5 +21,5 @@ class Annotator():
 
         return ''.join(ref_seq)
 
-    def get_gene_seq(self, gene: Gene, padding: int = 10000) -> str:
+    def get_gene_seq(self, gene: Gene, padding: int = 5000) -> str:
         return self.get_seq(gene.chromosome, gene.bp_start - padding, gene.bp_end + padding)
