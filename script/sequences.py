@@ -1,11 +1,11 @@
 from pyfaidx import Fasta
 from pysam import VariantFile
 
-from script.data_loading import get_path
+from script.data_loading import find_path
 from script.gene import Gene
 
 class Annotator():
-    def __init__(self, vcf_path: str, fasta_path: str = get_path('ch38.fa')):
+    def __init__(self, vcf_path: str, fasta_path: str = find_path('ch38.fa')):
         self._fasta = Fasta(fasta_path)
         self._vcf = VariantFile(vcf_path)
 
