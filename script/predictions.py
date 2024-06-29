@@ -44,10 +44,7 @@ class _SpliceAI(SpliceSitePredictor):
         donor_prob = y[0, :, 2]
         acceptor_prob = y[0, :, 1]
         # site can only be donor OR acceptor -> we can take the maximum
-        splice_prob = np.maximum.reduce([
-            np.concatenate([np.zeros(self._d_offset), donor_prob]),
-            np.concatenate([acceptor_prob, np.zeros(self._d_offset)])
-       ])[:-self._d_offset]
+        splice_prob = np.maximum.reduce([donor_prob, acceptor_prob])
 
         return (splice_prob, var_idx[self._lost_padding:-self._lost_padding])
 
