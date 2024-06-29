@@ -11,11 +11,14 @@ class SpliceSitePredictor:
         raise NotImplementedError('Abstract class cannot be instantiated')
 
     # probabilities donor, acceptor, index mapping to reference genome
-    def predict(self, annotator: Annotator, gene: Gene) -> tuple[np.ndarray, np.ndarray, list[list[int]]]:
+    def predict(self, annotator: Annotator, gene: Gene) -> tuple[np.ndarray, list[list[int]]]:
         raise NotImplementedError('Method needs to be implemented by subclass')
 
 class _SpliceAI(SpliceSitePredictor):
     _lost_padding = 5000
+    # SpliceAI has different interpretation of which base pair exactly is the
+    # "donor" site
+    _d_offset = 2
 
     def __init__(self):
         self._models = None
@@ -27,14 +30,19 @@ class _SpliceAI(SpliceSitePredictor):
             self._models = [load_model(resource_filename('spliceai', x)) for x in _paths]
         return self._models
 
-    def _predict(self, annotator: Annotator, gene: Gene) -> tuple[np.ndarray, np.ndarray, list[list[int]]]:
+    def _predict(self, annotator: Annotator, gene: Gene) -> tuple[np.ndarray, list[list[int]]]:
         seq, var_idx = annotator.get_gene_seq(gene, padding=self._lost_padding)
         encoded = one_hot_encode(seq)[None, :]
 
         y = np.mean([model.predict(encoded) for model in self._get_models()], axis=0)
         donor_prob = y[0, :, 2]
         acceptor_prob = y[0, :, 1]
+        # site can only be donor OR acceptor -> we can take the maximum
+        splice_prob = np.maximum.reduce([
+            np.concatenate([np.zeros(self._d_offset), donor_prob]),
+            np.concatenate([acceptor_prob, np.zeros(self._d_offset)])
+       ])[:-self._d_offset]
 
-        return (donor_prob, acceptor_prob, var_idx[self._lost_padding:-self._lost_padding])
+        return (splice_prob, var_idx[self._lost_padding:-self._lost_padding])
 
 spliceai = _SpliceAI()
