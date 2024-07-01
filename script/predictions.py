@@ -1,11 +1,11 @@
 from keras.models import load_model
 import numpy as np
+from pangolin import model as _pangolin_model
 from pkg_resources import resource_filename
+from pyensembl.gene import Gene
 from spliceai.utils import one_hot_encode
 import torch
-from pangolin import model as _pangolin_model
 
-from script.gene import Gene
 from script.sequences import Annotator
 
 class SpliceSitePredictor:

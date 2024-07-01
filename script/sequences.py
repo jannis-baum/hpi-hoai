@@ -1,8 +1,9 @@
+from pyensembl.gene import Gene
 from pyfaidx import Fasta
 from pysam import VariantFile
 
 from script.data_loading import find_path
-from script.gene import Gene
+from script.gene import contig2chrom
 
 class Annotator():
     def __init__(self, vcf_path: str, fasta_path: str = find_path('ch38.fa')):
@@ -34,5 +35,4 @@ class Annotator():
         return (''.join(seq), idx)
 
     def get_gene_seq(self, gene: Gene, padding: int = 5000) -> tuple[str, list[list[int]]]:
-        return self.get_seq(gene.chromosome, gene.bp_start - padding, gene.bp_end + padding)
-
+        return self.get_seq(contig2chrom(gene.contig), gene.start - padding, gene.end + padding)

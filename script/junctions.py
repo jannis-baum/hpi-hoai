@@ -1,16 +1,17 @@
 import pandas as pd
+from pyensembl.gene import Gene
 
 from script.data_loading import find_path, study_info
-from script.gene import Gene
+from script.gene import contig2chrom
 
 def get_junctions(case_id: str, gene: Gene) -> pd.DataFrame:
     case = study_info.loc[case_id]
 
     df = pd.read_csv(find_path(case['splice']), compression='gzip', sep='\t')
     # filter splice junction quantification for given gene
-    df = df[(df['#chromosome'] == gene.chromosome)
-        & (df['intron_start'] > gene.bp_start) & (df['intron_start'] < gene.bp_end) \
-        & (df['intron_end'] > gene.bp_start) & (df['intron_end'] < gene.bp_end) \
+    df = df[(df['#chromosome'] == contig2chrom(gene.contig))
+        & (df['intron_start'] > gene.start) & (df['intron_start'] < gene.end) \
+        & (df['intron_end'] > gene.start) & (df['intron_end'] < gene.end) \
         & (df['strand'] != 0)
     ]
     return pd.DataFrame({
