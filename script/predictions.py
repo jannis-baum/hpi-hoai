@@ -16,6 +16,9 @@ class SpliceSitePredictor:
     def predict(self, annotator: Annotator, gene: Gene) -> tuple[np.ndarray, list[list[int]]]:
         raise NotImplementedError('Method needs to be implemented by subclass')
 
+    def name(self) -> str:
+        return type(self).__name__.replace("_", "").lower()
+
 # ------------------------------------------------------------------------------
 # MARK: SpliceAI
 
@@ -70,7 +73,7 @@ class _Pangolin(SpliceSitePredictor):
 
     def __init__(self):
         # use gpu > apple silicon > cpu
-        self._device = torch.device('cuda:0' if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else 'cpu')) 
+        self._device = torch.device('cuda:0' if torch.cuda.is_available() else (torch.device('mps') if torch.backends.mps.is_available() else 'cpu'))
         self._models = None
 
         self.predict = self._predict
