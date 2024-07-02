@@ -1,2 +1,5 @@
-def contig2chrom(contig):
-    return f'chr{contig}'
+from pyensembl.gene import Gene
+
+
+def chrom(gene: Gene):
+    return f'chr{gene.contig}'
