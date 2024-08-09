@@ -1,4 +1,7 @@
+from hashlib import md5
 import os
+import pickle
+from typing import Callable, TypeVar
 
 import pandas as pd
 
@@ -30,3 +33,28 @@ def make_path(*components: str) -> str:
     return path
 
 study_info = pd.read_csv(find_path('info.csv'), index_col='case_id')
+
+def _hash(args):
+    return str(int.from_bytes(
+        md5(str(args).encode()).digest(),
+        'big'
+    ))
+
+class Hashable():
+    identity = []
+    def hash(self):
+        return _hash(self.identity)
+
+T = TypeVar('T')
+def retrieve_or_compute(compute_fn: Callable[[], T], *identifiers) -> T:
+    filename = _hash([i.hash() if isinstance(i, Hashable) else i for i in identifiers])
+    try:
+        with open(find_path(filename), 'rb') as fp:
+            result = pickle.load(fp)
+            return result
+    except:
+        path = make_path('generic-cache', filename)
+        result = compute_fn()
+        with open(path, 'wb') as fp:
+            pickle.dump(result, fp)
+        return result
