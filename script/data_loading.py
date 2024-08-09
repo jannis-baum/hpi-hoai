@@ -46,9 +46,11 @@ class Hashable():
         return _hash(self.identity)
 
 T = TypeVar('T')
-def retrieve_or_compute(compute_fn: Callable[[], T], *identifiers, destination='generic') -> T:
+def retrieve_or_compute(compute_fn: Callable[[], T], *identifiers, destination='generic', overwrite=False) -> T:
     filename = _hash([i.hash() if isinstance(i, Hashable) else i for i in identifiers]) + '.pkl'
     try:
+        if overwrite:
+            raise Exception('Overwrite')
         with open(find_path(filename), 'rb') as fp:
             result = pickle.load(fp)
             return result
