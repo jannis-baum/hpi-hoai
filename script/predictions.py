@@ -92,7 +92,7 @@ class _Pangolin(SpliceSitePredictor):
         return self._models
 
     def _predict(self, annotator: Annotator, gene: Gene) -> tuple[np.ndarray, list[list[int]]]:
-        seq, var_idx = annotator.get_gene_seq(gene)
+        seq, var_idx = annotator.get_gene_seq(gene, padding=self._lost_padding)
         encoded = one_hot_encode(seq).T
 
         x = torch.from_numpy(np.expand_dims(encoded, axis=0)).float().to(self._device)
@@ -112,7 +112,7 @@ class ZeroBaseline(SpliceSitePredictor):
         self.predict = self._predict
 
     def _predict(self, annotator: Annotator, gene: Gene) -> tuple[np.ndarray, list[list[int]]]:
-        seq, var_idx = annotator.get_gene_seq(gene)
+        seq, var_idx = annotator.get_gene_seq(gene, padding=0)
         return (np.array([0] * len(seq)), var_idx)
 
 zero_baseline = ZeroBaseline()
