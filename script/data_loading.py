@@ -53,6 +53,12 @@ def retrieve_or_compute(compute_fn: Callable[[], T], *identifiers, destination='
             result = pickle.load(fp)
             return result
     except:
+        # file could exist but be corrupted
+        try:
+            path = find_path(filename)
+            os.remove(path)
+        except:
+            pass
         path = make_path('cache', destination, filename)
         result = compute_fn()
         with open(path, 'wb') as fp:
