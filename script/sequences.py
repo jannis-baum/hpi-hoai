@@ -47,7 +47,7 @@ class Annotator(Hashable):
     # index/indices they correspond to in the reference genome
     def get_seq(self, chromosome: str, start: int, end: int, rc: bool) -> tuple[str, list[list[int]]]:
         args = (chromosome, start, end, rc)
-        return retrieve_or_compute(lambda: self._get_seq(*args), self, *args)
+        return retrieve_or_compute(lambda: self._get_seq(*args), self, *args, destination='sequences')
 
     def get_gene_seq(self, gene: Gene, padding: int) -> tuple[str, list[list[int]]]:
         return self.get_seq(chrom(gene), gene.start - padding, gene.end + padding, (gene.strand == '-'))
