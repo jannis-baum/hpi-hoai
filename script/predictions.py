@@ -116,3 +116,6 @@ class ZeroBaseline(SpliceSitePredictor):
         return (np.array([0] * len(seq)), var_idx)
 
 zero_baseline = ZeroBaseline()
+
+# ------------------------------------------------------------------------------
+predictors: list[SpliceSitePredictor] = [spliceai, pangolin, zero_baseline]
