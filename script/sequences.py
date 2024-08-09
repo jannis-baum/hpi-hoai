@@ -2,10 +2,10 @@ from pyensembl.gene import Gene
 from pyfaidx import Fasta
 from pysam import VariantFile
 
-from script.data_loading import find_path
+from script.data_loading import find_path, retrieve_or_compute, Hashable
 from script.gene import chrom
 
-class Annotator():
+class Annotator(Hashable):
     _complement_base = {
         'A': 'T',
         'T': 'A',
@@ -16,11 +16,9 @@ class Annotator():
     def __init__(self, vcf_path: str, fasta_path: str = find_path('ch38.fa')):
         self._fasta = Fasta(fasta_path)
         self._vcf = VariantFile(vcf_path)
+        self.identity = [self._fasta.filename, self._vcf.filename]
 
-    # get sequence with variants and reference indices for alignment:
-    # reference indices correspond to elements of sequence and denote which
-    # index/indices they correspond to in the reference genome
-    def get_seq(self, chromosome: str, start: int, end: int, rc: bool) -> tuple[str, list[list[int]]]:
+    def _get_seq(self, chromosome: str, start: int, end: int, rc: bool) -> tuple[str, list[list[int]]]:
         seq: str = self._fasta.get_seq(chromosome, start, end + 1).seq
         idx = [[i] for i in range(start, end + 1)]
 
@@ -44,5 +42,12 @@ class Annotator():
             idx = idx[::-1]
         return (''.join(seq), idx)
 
-    def get_gene_seq(self, gene: Gene, padding: int = 5000) -> tuple[str, list[list[int]]]:
+    # get sequence with variants and reference indices for alignment:
+    # reference indices correspond to elements of sequence and denote which
+    # index/indices they correspond to in the reference genome
+    def get_seq(self, chromosome: str, start: int, end: int, rc: bool) -> tuple[str, list[list[int]]]:
+        args = (chromosome, start, end, rc)
+        return retrieve_or_compute(lambda: self._get_seq(*args), self, *args)
+
+    def get_gene_seq(self, gene: Gene, padding: int) -> tuple[str, list[list[int]]]:
         return self.get_seq(chrom(gene), gene.start - padding, gene.end + padding, (gene.strand == '-'))
