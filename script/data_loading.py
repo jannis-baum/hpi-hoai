@@ -46,14 +46,14 @@ class Hashable():
         return _hash(self.identity)
 
 T = TypeVar('T')
-def retrieve_or_compute(compute_fn: Callable[[], T], *identifiers) -> T:
-    filename = _hash([i.hash() if isinstance(i, Hashable) else i for i in identifiers])
+def retrieve_or_compute(compute_fn: Callable[[], T], *identifiers, destination='generic') -> T:
+    filename = _hash([i.hash() if isinstance(i, Hashable) else i for i in identifiers]) + '.pkl'
     try:
         with open(find_path(filename), 'rb') as fp:
             result = pickle.load(fp)
             return result
     except:
-        path = make_path('generic-cache', filename)
+        path = make_path('cache', destination, filename)
         result = compute_fn()
         with open(path, 'wb') as fp:
             pickle.dump(result, fp)
