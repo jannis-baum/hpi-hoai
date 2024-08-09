@@ -106,3 +106,13 @@ class _Pangolin(SpliceSitePredictor):
         return (y, var_idx[self._lost_padding:-self._lost_padding])
 
 pangolin = _Pangolin()
+
+class ZeroBaseline(SpliceSitePredictor):
+    def __init__(self):
+        self.predict = self._predict
+
+    def _predict(self, annotator: Annotator, gene: Gene) -> tuple[np.ndarray, list[list[int]]]:
+        seq, var_idx = annotator.get_gene_seq(gene)
+        return (np.array([0] * len(seq)), var_idx)
+
+zero_baseline = ZeroBaseline()
