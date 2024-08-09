@@ -57,4 +57,5 @@ def retrieve_or_compute(compute_fn: Callable[[], T], *identifiers) -> T:
         result = compute_fn()
         with open(path, 'wb') as fp:
             pickle.dump(result, fp)
+        index()
         return result
