@@ -59,6 +59,7 @@ def retrieve_or_compute(compute_fn: Callable[[], T], *identifiers, destination='
         try:
             path = find_path(filename)
             os.remove(path)
+            index()
         except:
             pass
         path = make_path('cache', destination, filename)
