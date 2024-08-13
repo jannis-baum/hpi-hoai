@@ -107,15 +107,20 @@ class _Pangolin(SpliceSitePredictor):
 
 pangolin = _Pangolin()
 
-class ZeroBaseline(SpliceSitePredictor):
-    def __init__(self):
+class BaselinePredictor(SpliceSitePredictor):
+    def __init__(self, value: float):
         self.predict = self._predict
+        self.value = value
 
     def _predict(self, annotator: Annotator, gene: Gene) -> tuple[np.ndarray, list[list[int]]]:
         seq, var_idx = annotator.get_gene_seq(gene, padding=0)
-        return (np.array([0] * len(seq)), var_idx)
+        return (np.array([self.value] * len(seq)), var_idx)
 
-zero_baseline = ZeroBaseline()
+    def name(self) -> str:
+        return f'baseline{self.value}'
+
+baseline_zero = BaselinePredictor(0)
+baseline_one = BaselinePredictor(1)
 
 # ------------------------------------------------------------------------------
-predictors: list[SpliceSitePredictor] = [spliceai, pangolin, zero_baseline]
+predictors: list[SpliceSitePredictor] = [spliceai, pangolin, baseline_zero, baseline_one]
