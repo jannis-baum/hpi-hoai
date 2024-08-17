@@ -46,8 +46,7 @@ pip install -r requirements.txt
 pyensembl install --release 111 --species homo_sapiens
 ```
 
-> [!Note]
-> The specific `pip` and `setuptools` versions are necessary to fix a
+> **Note:** The specific `pip` and `setuptools` versions are necessary to fix a
 > [deprecation problem](https://github.com/jamescasbon/PyVCF/issues/334) of
 > [PyVCF](https://github.com/jamescasbon/PyVCF), a dependency of Pangolin.
 
@@ -83,11 +82,10 @@ below:
    filtering here is not necessary but significantly speeds up the next step.
 2. In the website's navigation bar, click *Repository* and then *JSON* at the
    top-left of the table to download a list of the selected files. Save the JSON
-   at `data/files.json`
+   at `data/files.json`.
 
-   > [!Note]
-   > The maximal download speed of this list seems to drop significantly with
-   > the number of selected files so this may take a while.
+   > **Note:** The maximal download speed of this list seems to drop
+   > significantly with the number of selected files so this may take a while.
 
 3. Click *Add All Files to Cart* at the top-right of the table. Navigate to
    *Cart* at the top-right of the website, then open the drop-down menu
@@ -110,4 +108,4 @@ below:
    `data/manifest.txt` file. You can save them anywhere in the `data/`
    directory; the subdirectory structure is not relevant.
 
-Now you have all data to run the implemented pipeline!
+Now you have all data to run the implemented pipeline for your study!
