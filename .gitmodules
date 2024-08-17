@@ -1,6 +1,3 @@
 [submodule "pangolin/Pangolin"]
 	path = subrepos/Pangolin
 	url = https://github.com/jannis-baum/Pangolin.git
-[submodule "subrepos/SpliceAI"]
-	path = subrepos/SpliceAI
-	url = https://github.com/jannis-baum/SpliceAI.git
