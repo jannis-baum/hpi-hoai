@@ -100,6 +100,7 @@ overrides==7.7.0
 packaging==24.0
 pandas==2.2.2
 pandocfilters==1.5.1
+pangolin @ git+https://github.com/tkzeng/Pangolin.git@5cf94b8db938c658391b4305cd7ce33297d44ff7
 parso==0.8.4
 pexpect==4.9.0
 pillow==10.3.0

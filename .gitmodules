@@ -1,3 +1,0 @@
-[submodule "pangolin/Pangolin"]
-	path = subrepos/Pangolin
-	url = https://github.com/jannis-baum/Pangolin.git
